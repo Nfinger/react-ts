@@ -1,19 +1,33 @@
-import React, { useState } from 'react'
-import logo from './logo.svg'
+import React, { useEffect } from 'react'
+import {Helmet} from "react-helmet";
 import './App.css'
-import { userTable } from './logic/supabase'
 import 'virtual:windi.css'
-import { useAsync } from 'react-use'
-import { Link, Route } from "wouter";
-import AuthPage from './pages/auth/auth'
-import Dashboard from './pages/dashoard'
+import { Route, Router, useLocation } from "wouter";
+import DefaultLayout from './layouts/default'
+import { links } from './links'
+import { getSession } from './logic/auth';
+
+const selectLayout = () => {
+  const session = getSession()
+  return session ? DefaultLayout : React.Fragment
+}
 
 function App() {
+  const Layout = selectLayout()
+  const [location] = useLocation();
+  const activeLink = links.find(({ path }) => path === location)
+
   return (
-    <div className="App">
-      <Route path="/auth" component={AuthPage} />
-      <Route path="/dashboard" component={Dashboard} />
-    </div>
+    <Router>
+      <Helmet>
+        <meta charSet="utf-8" />
+        <title>{activeLink && activeLink.text ? `Gamify - ${activeLink.text}` : "Gamify"}</title>
+        <link rel="canonical" href="http://mysite.com/example" />
+      </Helmet>
+      <Layout>
+        {links.map(Route)}
+      </Layout>
+    </Router>
   )
 }
 

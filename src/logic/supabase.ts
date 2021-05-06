@@ -6,7 +6,7 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsI
 const SUPABASE_URL = "https://ufuetbfsraguftpgtybn.supabase.co"
 export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-class Supabase {
+export class Supabase {
     table = ""
 
     constructor(tableName: string) {
@@ -14,15 +14,15 @@ class Supabase {
 
     }
 
-    async getAll() {
+    async getAll(callback: Function) {
         let { data, error } = await supabase
             .from(this.table)
             .select('*')
         if (error) throw Error(error.message)
-        return data
+        callback(data)
     }
 
-    async filter(field: string | { field: string; operator: string; value: any; }[], operator = null, value: string = "", select: string = '*') {
+    async filter(field: string | { field: string; operator: string; value: any; }[], operator: string | null = null, value: string = "", select: string = '*', callback: Function) {
         let data, error
         if (typeof field === 'string') {
 
@@ -44,19 +44,19 @@ class Supabase {
             
 
         if (error) throw Error(error.message)
-        return data
+        callback(data)
     }
 
-    async findById(id: string) {
+    async findById(id: string, callback: Function) {
         let { data, error } = await supabase
             .from(this.table)
             .select('*')
             .eq('id', id)
         if (error) throw Error(error.message)
-        return data[0]
+        callback(data[0])
     }
 
-    async create(newData: Object) {
+    async create(newData: Object, callback: Function) {
         const { data, error } = await supabase
         .from(this.table)
         .insert([
@@ -64,27 +64,27 @@ class Supabase {
         ])
 
         if (error) throw Error(error.message)
-        return data
+        callback(data[0])
     }
 
-    async update(update: Object, query: { [key: string]: string; }) {
+    async update(update: Object, query: { [key: string]: string; }, callback: Function) {
         const { data, error } = await supabase
             .from(this.table)
             .update(update)
             .match(query)
         
         if (error) throw Error(error.message)
-        return data
+        callback(data[0])
     }
 
-    async delete(query: { [key: string]: string; }) {
+    async delete(query: { [key: string]: string; }, callback: Function) {
         const { data, error } = await supabase
             .from(this.table)
             .delete()
             .match(query)
         
         if (error) throw Error(error.message)
-        return data
+        callback(data)
     }
 }
 

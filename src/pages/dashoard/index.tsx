@@ -1,24 +1,26 @@
-import React, { useEffect } from 'react'
-import { signOut, getCurrentUser} from '../../logic/auth'
-import { Button } from '../../components/Button'
-import { useLocation } from 'wouter'
+import React from 'react'
+import UserList from '../../components/User/List'
+import Modal from '../../core/Modal'
+import { getCurrentUser} from '../../logic/auth'
+
 
 const Dashboard = () => {
     const currentUser = getCurrentUser()
-    const [location, setLocation] = useLocation()
-
-    const logOut = () => {
-        signOut()
-        setLocation('/auth')
-    }
 
     return (
         <div>
             HI {currentUser?.email}
-            <Button
-                text="Sign Out"
-                onClick={logOut}
-            />
+            {/* <Modal 
+                title="Payment successful"
+                content={
+                    <p className="text-sm text-gray-500">
+                      Your payment has been successfully submitted. We’ve sent
+                      your an email with all of the details of your order.
+                    </p>
+                }
+                okText="Gracias"
+                 buttonText="Open Modalzzz"
+            /> */}
         </div>
     )
 }
